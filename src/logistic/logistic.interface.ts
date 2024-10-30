@@ -50,6 +50,56 @@ export interface GetShippingParameterResponse {
   };
 }
 
+export interface GetChannelListRequest {}
+
+export interface GetChannelListResponse {
+  error: string;
+  message: string;
+  request_id: string;
+  response: {
+    logistics_channel_list: {
+      logistics_channel_id: number;
+      logistics_channel_name: string;
+      cod_enabled: boolean;
+      enabled: boolean;
+      fee_type:
+        | "SIZE_SELECTION"
+        | "SIZE_INPUT"
+        | "FIXED_DEFAULT_PRICE"
+        | "CUSTOM_PRICE";
+      size_list: {
+        size_id: string;
+        name: string;
+        default_price: string;
+      }[];
+      weight_limit: {
+        item_min_weight: number;
+        item_max_weight: number;
+      };
+      item_max_dimension: {
+        height: number;
+        width: number;
+        length: number;
+        unit: number;
+        dimension_sum: number;
+      };
+      volume_limit: {
+        item_max_volume: number;
+        item_min_volume: number;
+      };
+      logistics_description: string;
+      force_enable: boolean;
+      mask_channel_id: number;
+      block_seller_cover_shipping_fee: boolean;
+      support_cross_border: boolean;
+      seller_logistic_has_configuration: boolean;
+      logistics_capability: {
+        seller_logistics: boolean;
+      };
+    }[];
+  };
+}
+
 export interface GetTrackingNumberRequest {
   order_sn: string;
   packing_number?: string;

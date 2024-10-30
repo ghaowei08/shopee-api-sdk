@@ -1,6 +1,8 @@
 import axios, { AxiosInstance } from "axios";
 import CryptoJS from "crypto-js";
 import {
+  GetChannelListRequest,
+  GetChannelListResponse,
   GetShippingParameterRequest,
   GetShippingParameterResponse,
   GetTrackingNumberRequest,
@@ -8,11 +10,19 @@ import {
   ShipOrderRequest,
   ShipOrderResponse,
 } from "./logistic.interface";
+import requestToQuery from "../helper/requestToQuery";
 
 interface LogisticGroupInstance {
   getShippingParameter: (
     req: GetShippingParameterRequest
   ) => Promise<GetShippingParameterResponse>;
+  getChannelList: (
+    req: GetChannelListRequest
+  ) => Promise<GetChannelListResponse>;
+  getTrackingNumber: (
+    req: GetTrackingNumberRequest
+  ) => Promise<GetTrackingNumberResponse>;
+  shipOrder: (req: ShipOrderRequest) => Promise<ShipOrderResponse>;
 }
 
 export class LogisticGroup implements LogisticGroupInstance {
@@ -54,20 +64,25 @@ export class LogisticGroup implements LogisticGroupInstance {
   async getShippingParameter(
     req: GetShippingParameterRequest
   ): Promise<GetShippingParameterResponse> {
-    const requestBody = Object.entries(req).reduce((acc: any, [key, value]) => {
-      if (value !== undefined) {
-        if (Array.isArray(value)) {
-          acc[key] = value.join(",");
-        } else {
-          acc[key] = value;
-        }
-      }
-      return acc;
-    }, {});
-    const query = new URLSearchParams(requestBody);
     const url = `${this.generateUrl(
       "/api/v2/logistics/get_shipping_parameter"
-    )}&${query.toString()}`;
+    )}&${requestToQuery(req)}`;
+    const res = await this.apiInstance({
+      url,
+      method: "GET",
+    });
+    return res.data;
+  }
+
+  /**
+   * @description Use this api to get all supported logistic channels.
+   */
+  async getChannelList(
+    req: GetChannelListRequest
+  ): Promise<GetChannelListResponse> {
+    const url = `${this.generateUrl(
+      "/api/v2/logistics/get_channel_list"
+    )}&${requestToQuery(req)}`;
     const res = await this.apiInstance({
       url,
       method: "GET",
@@ -81,20 +96,9 @@ export class LogisticGroup implements LogisticGroupInstance {
   async getTrackingNumber(
     req: GetTrackingNumberRequest
   ): Promise<GetTrackingNumberResponse> {
-    const requestBody = Object.entries(req).reduce((acc: any, [key, value]) => {
-      if (value !== undefined) {
-        if (Array.isArray(value)) {
-          acc[key] = value.join(",");
-        } else {
-          acc[key] = value;
-        }
-      }
-      return acc;
-    }, {});
-    const query = new URLSearchParams(requestBody);
     const url = `${this.generateUrl(
       "/api/v2/logistics/get_tracking_number"
-    )}&${query.toString()}`;
+    )}&${requestToQuery(req)}`;
     const res = await this.apiInstance({
       url,
       method: "GET",
@@ -106,20 +110,7 @@ export class LogisticGroup implements LogisticGroupInstance {
    * @description After arranging shipment (v2.logistics.ship_order) for the integrated channel, use this api to get the tracking_number, which is a required parameter for creating shipping labels. The api response can return tracking_number empty, since this info is dependent from the 3PL, due to this it is allowed to keep calling the api within 5 minutes interval, until the tracking_number is returned.
    */
   async shipOrder(req: ShipOrderRequest): Promise<ShipOrderResponse> {
-    const requestBody = Object.entries(req).reduce((acc: any, [key, value]) => {
-      if (value !== undefined) {
-        if (Array.isArray(value)) {
-          acc[key] = value.join(",");
-        } else {
-          acc[key] = value;
-        }
-      }
-      return acc;
-    }, {});
-    const query = new URLSearchParams(requestBody);
-    const url = `${this.generateUrl(
-      "/api/v2/logistics/ship_order"
-    )}&${query.toString()}`;
+    const url = `${this.generateUrl("/api/v2/logistics/ship_order")}`;
     const res = await this.apiInstance({
       url,
       method: "POST",
