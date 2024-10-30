@@ -1,3 +1,9 @@
+export interface PublicConfig {
+  baseUrl: string;
+  partnerId: number;
+  partnerKey: string;
+  refreshToken: string;
+}
 export interface GetAccessTokenReq {
   code: string;
   partner_id: number;
@@ -14,13 +20,6 @@ export interface GetAccessTokenRes {
   message: string;
   merchant_id_list: string;
   shop_id_list: string;
-}
-
-export interface PublicConfig {
-  baseUrl: string;
-  partnerId: number;
-  partnerKey: string;
-  refreshToken: string;
 }
 
 export interface RefreshTokenRequest {
