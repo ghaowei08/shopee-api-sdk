@@ -1,3 +1,11 @@
+export interface OrderConfig {
+  baseUrl: string;
+  shopId: number;
+  partnerId: number;
+  partnerKey: string;
+  accessToken: string;
+}
+
 export interface GetOrderListRequest {
   time_range_field: "create_time" | "update_time";
   time_from: number;

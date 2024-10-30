@@ -7,7 +7,9 @@ import {
   GetOrderListResponse,
   GetShipmentListRequest,
   GetShipmentListResponse,
+  OrderConfig,
 } from "./order.interface";
+import requestToQuery from "../helper/requestToQuery";
 
 interface OrderGroupInstance {
   getOrderList: (req: GetOrderListRequest) => Promise<GetOrderListResponse>;
@@ -26,13 +28,7 @@ export class OrderGroup implements OrderGroupInstance {
   private partnerKey: string;
   private accessToken: string;
 
-  constructor(payload: {
-    baseUrl: string;
-    shopId: number;
-    partnerId: number;
-    partnerKey: string;
-    accessToken: string;
-  }) {
+  constructor(payload: OrderConfig) {
     this.apiInstance = axios.create({
       baseURL: payload.baseUrl,
     });
@@ -56,20 +52,9 @@ export class OrderGroup implements OrderGroupInstance {
    * @description Use this api to search orders. You may also filter them by status, if needed.
    */
   async getOrderList(req: GetOrderListRequest): Promise<GetOrderListResponse> {
-    const requestBody = Object.entries(req).reduce((acc: any, [key, value]) => {
-      if (value !== undefined) {
-        if (Array.isArray(value)) {
-          acc[key] = value.join(",");
-        } else {
-          acc[key] = value;
-        }
-      }
-      return acc;
-    }, {});
-    const query = new URLSearchParams(requestBody);
     const url = `${this.generateUrl(
       "/api/v2/order/get_order_list"
-    )}&${query.toString()}`;
+    )}&${requestToQuery(req)}`;
     const res = await this.apiInstance({
       url,
       method: "GET",
@@ -83,16 +68,9 @@ export class OrderGroup implements OrderGroupInstance {
   async getShipmentList(
     req: GetShipmentListRequest
   ): Promise<GetShipmentListResponse> {
-    const requestBody = Object.entries(req).reduce((acc: any, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = value;
-      }
-      return acc;
-    }, {});
-    const query = new URLSearchParams(requestBody);
     const url = `${this.generateUrl(
       "/api/v2/order/get_shipment_list"
-    )}&${query.toString()}`;
+    )}&${requestToQuery(req)}`;
     const res = await this.apiInstance({
       url,
       method: "GET",
@@ -106,16 +84,9 @@ export class OrderGroup implements OrderGroupInstance {
   async getOrderDetail(
     req: GetOrderDetailRequest
   ): Promise<GetOrderDetailResponse> {
-    const requestBody = Object.entries(req).reduce((acc: any, [key, value]) => {
-      if (value !== undefined) {
-        acc[key] = value;
-      }
-      return acc;
-    }, {});
-    const query = new URLSearchParams(requestBody);
     const url = `${this.generateUrl(
       "/api/v2/order/get_order_detail"
-    )}&${query.toString()}`;
+    )}&${requestToQuery(req)}`;
     const res = await this.apiInstance({
       url,
       method: "GET",
