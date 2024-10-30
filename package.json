@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@types/crypto-js": "^4.2.2",
+    "dotenv": "^16.4.5",
     "rimraf": "^6.0.1"
   },
   "homepage": "https://github.com/ghaowei08/shopee-api-sdk.git#readme",
